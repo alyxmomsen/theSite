@@ -1,1 +1,264 @@
-<div>helllo</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="root">
+        <div id="theField"></div>
+
+    </div>
+    <div class="" id="sideBar"></div>
+</body>
+</html>
+<style>
+
+    :root {
+        --elemSideWidth: 27px ;
+        box-sizing: border-box;
+        background-color: rgb(35, 48, 39);
+    }
+
+    #root {
+        /* display: flex;
+        flex-direction: column; */
+    }
+
+    .hero {
+        width: var(--elemSideWidth);
+        height: var(--elemSideWidth);
+        background-color: red;
+        transition: .2s ease-out;
+    }
+
+    #theField {
+        display: flex;
+        flex-direction: column;
+        /* gap:2px; */
+        position: relative;
+    }
+
+    #theField .field_row {
+        display: flex;
+        /* gap:2px ; */
+    }
+
+    #theField .field_col {
+        width: var(--elemSideWidth);
+        height: var(--elemSideWidth);
+        background-color: rgb(34, 59, 59);
+        border: 1px solid black;
+        margin: 6px;
+    }
+
+
+</style>
+<script>
+
+    class Hero {
+        theFieldRowID = 0 ;
+        theFieldColID = 0 ;
+        heroAssocRealHTMLElement = null ;
+        inGame = false ;
+        constructor (theField_arr) {
+            this.heroAssocRealHTMLElement = document.createElement('div');
+            this.heroAssocRealHTMLElement.style.position = 'absolute' ;
+            this.heroAssocRealHTMLElement.className = 'hero' ;
+            this.heroAssocRealHTMLElement.style.left = 0 ;
+            this.heroAssocRealHTMLElement.style.top = 0 ;
+            this.heroAssocRealHTMLElement.style.left = '0' ;
+            this.heroAssocRealHTMLElement.style.top = '0' ;
+
+            theField_arr.append(this.heroAssocRealHTMLElement);
+            theField_arr.childNodes[0].childNodes[0];
+
+            console.log('the field from hero' , theField_arr);
+        }
+    }
+
+    class Game {
+        theRealField = null ;
+        field = [] ;
+        heroes = [] ;
+        rows ; 
+        cols ;
+        constructor (rows , cols) {
+            this.rows = rows ;
+            this.cols = cols ;
+
+
+        }
+
+
+
+        createHero (number) {
+
+            for(let i = 0 ; i < number ; i++) {
+                this.heroes.push(new Hero(this.theRealField));
+            }
+
+            console.log(this.heroes);
+            
+            return this.heroes ; 
+        }
+
+
+        createTheField () {
+            // let theField = document.createElement('div');
+            // theField.style.className = 'the_field' ;
+            let row ; 
+            let col ; 
+
+            let theField = document.querySelector('#theField');
+            this.theRealField = theField ;
+
+            for (let i = 0 ; i < this.rows ; i++) {
+                row = document.createElement('div');
+                row.className = 'field_row' ;
+                for (let ii = 0 ; ii < this.cols ; ii++) {
+                    col = document.createElement('div');
+                    col.className = 'field_col' ;
+                    row.append(col);
+                }
+
+                theField.append(row);
+
+            }
+            console.log();
+            console.log('theField is : ' , this.theRealField);
+        }
+
+        setHeroPos(heroArrayID , left_right , up_down , gameObject) {
+            
+
+            // console.log(XMove , YMove);
+            // console.log(arguments);
+
+            console.log(heroArrayID);
+            
+            let xRow = this.heroes[heroArrayID].theFieldColID ; 
+            let yRow = this.heroes[heroArrayID].theFieldRowID ;
+
+            // console.log(xRow , yRow);
+
+            // console.log(this.theRealField.childNodes[xRow + left_right]);
+
+            let posX , posY ; 
+
+            if(this.theRealField.childNodes[xRow + left_right] && this.theRealField.childNodes[xRow + left_right].childNodes[yRow + up_down]) {
+                posX = this.theRealField.childNodes[xRow + left_right].childNodes[yRow + up_down].offsetTop;
+                posY = this.theRealField.childNodes[xRow + left_right].childNodes[yRow + up_down].offsetLeft;
+                this.heroes[heroArrayID].heroAssocRealHTMLElement.style.left = posX + 'px';
+                this.heroes[heroArrayID].heroAssocRealHTMLElement.style.top = posY + 'px';
+
+                this.heroes[heroArrayID].theFieldRowID += up_down ; 
+                this.heroes[heroArrayID].theFieldColID += left_right;
+            }
+
+
+            // let posX = this.theRealField.childNodes[xRow + left_right].childNodes[yRow + up_down].offsetTop;
+            // let posY = this.theRealField.childNodes[xRow + left_right].childNodes[yRow + up_down].offsetLeft;
+            // console.log(posX , posY);
+            // this.heroes[heroArrayID].heroAssocRealHTMLElement.style.left = posX + 'px';
+            // this.heroes[heroArrayID].heroAssocRealHTMLElement.style.top = posY + 'px';
+
+            // this.heroes[heroArrayID].theFieldRowID += up_down ; 
+            // this.heroes[heroArrayID].theFieldColID += left_right;
+
+            // console.log(this.heroes[heroArrayID].heroAssocRealHTMLElement.style.left , this.heroes[heroArrayID].heroAssocRealHTMLElement.style.top);
+            console.log('done');
+            
+        }
+
+
+        directionRandomizer() {
+
+            let x = 0 , y = 0 ;
+
+            if(Math.floor(Math.random() * 2)) {
+                x = 0 ;
+                y = Math.floor(Math.random() * 3) - 1 ;
+            }
+            else {
+                x = Math.floor(Math.random() * 3) - 1 ;
+                y = 0 ;
+            }
+
+            return {x , y} ;
+        }
+
+
+        autoSet (heroArrayIDarray) {
+            
+            let o = null ;
+            
+            let doSetHeroPos = () => {
+
+                for(let i = 0 ; i < heroArrayIDarray.length ; i++) {
+
+
+                    // console.log(heroArrayIDarray);
+                    o = this.directionRandomizer();
+                    // console.log(o);
+                    
+                    this.setHeroPos(i , o.y , o.x , theGame);
+                    // i = 0 ;
+                }
+            }
+            
+            
+
+
+
+
+            setInterval(doSetHeroPos , 100);
+            
+        }
+        
+    }
+
+
+    let theGame = new Game (18 , 18) ;
+
+    theGame.createTheField();
+
+
+
+
+    // let heroindex = theGame.createHero();
+
+    theGame.createHero(20) ;
+
+    console.log(theGame.heroes);
+    theGame.autoSet(theGame.heroes);
+
+
+    document.onkeydown = function (e) {
+
+        // console.log(theGame.heroes[heroindex].heroAssocRealHTMLElement.style.left , theGame.heroes[heroindex].heroAssocRealHTMLElement.style.top);
+        
+
+        if(e.key === 'w') {
+            
+            theGame.setHeroPos(0 , 0 , -1 , theGame);
+        }
+        if(e.key === 's') {
+            theGame.setHeroPos(0 , 0 , 1 , theGame);
+        }
+        if(e.key === 'a') {
+            theGame.setHeroPos(0 , -1 , 0 , theGame);
+        }
+        if(e.key === 'd') {
+            theGame.setHeroPos(0 , 1 , 0 , theGame);
+        }
+    }
+
+
+
+
+
+
+</script>
